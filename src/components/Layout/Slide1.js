@@ -10,8 +10,10 @@ export const Slide1 = () => {
     const [loading, setLoading] = useState(false);
     const [index, setIndex] = React.useState(0);
     const [current,setCurrent] = useState(0);
-    const[startTime,setStartTime]=useState(0);
-    const[endTime,setEndTime]=useState(0);
+    const[startTime,setStartTime]=useState();
+    const[endTime,setEndTime]=useState();
+    const[startDate,setStartDate]=useState();
+    const[endDate,setEndDate]=useState();
     const delay = 3000;
    
 
@@ -28,11 +30,13 @@ export const Slide1 = () => {
              console.log (  "startTime",response.data[0].startAt);
              console.log (  "NOW TIMe",nowtime)
              console.log (  "timefrom",timefrom)
-             console.log (  "timetoo", endTime)
+             console.log (  "timetoo", moment(startDate).diff(moment(),'days'))
             
             setState(response.data[0].playlist.playlistContents)
             setStartTime(response.data[0].startAt) 
             setEndTime(response.data[0].endAt)
+            setStartDate(response.data[0].startDate) 
+            setEndDate(response.data[0].endDate)
             
             setLoading(false);
         })
@@ -48,36 +52,13 @@ const timefrom  = moment(nowtime).format('DD-MM-YYYY ,h:mm:ss a');
 var nowtime = new Date()  
 // var timeto = endTime;
 
-        if( timefrom >endTime ){
-          setLoading(false)
-          setState(true)
+        // if( timefrom >endTime ){
+        //   setLoading(false)
+        //   setState(true)
          
-            alert('start time should be smaller than end time!');
+        //     alert('start time should be smaller than end time!');
    
-        }else{
-        
-          
-        }
-// alert(tempDate);
-
-// const b =setStartTime();
-
-
-   
-  //   useEffect(()=>{
-
-  //     state.length >0 && state.map((p,index)=>(
-  //         // console.log("fileName",p.fileName)
-  //         console.log("duration",p.duration)
-
-  //     ))
-  // },[state])
- 
-  
- 
-   
-// if(startTime<0 && endTime  >0)
-
+        // }
 
 
 useEffect(() => {
@@ -85,37 +66,25 @@ useEffect(() => {
   setTimeout(
     () =>
       setIndex((prevIndex) =>
-        prevIndex === state.length - 1 ? 0 : prevIndex + 1
+        prevIndex === state.length - 1 ? 0 : prevIndex + 1 
       ),
     delay
   );
-  
+  setEndTime()
   return () => {
    
   };
 }, [index]);
       
-      // const endSlide=()=>{
-      //   console.log("end time",endTime)
-      //  setEndTime (endTime>0 );
-      // };
-     
-
-
-
-      // if(!Array.isArray(state) || state.length <= 0){
-      //   return null;
-      // }
-    
-  
+  if(timefrom <0 && moment(endDate).diff(moment(),'days')>0){
+    setState(true);
+    setLoading(false)
+  }
     return (
 
 
 <section className={classes.slideshow} >
 
-{/* {startTime <= tempDate && startTime.map((t,index)=>{
-  
-})} */}
 <div className={classes.slideshowSlider} style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
 
 { state.length > 0 && state.map((p,index)=>(
@@ -127,7 +96,7 @@ useEffect(() => {
   style={{p}} >
     {index === current && state.length >0 && state.map((p,index)=> (
    
-      <img src={p.fileName }    transition-duration={p.duration} key={index} width="100%" height="100%" alt="img" className={classes.image}/>
+      <img src={p.fileName }    transition-duration={p.duration} key={index}  interval={p.duration}width="100%" height="100%" alt="img" className={classes.image}/>
     ) )} 
 
     </div>
